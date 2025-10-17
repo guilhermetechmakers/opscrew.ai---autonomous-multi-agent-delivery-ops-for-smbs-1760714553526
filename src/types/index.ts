@@ -5,6 +5,8 @@ export interface User {
   full_name?: string;
   avatar_url?: string;
   role: "admin" | "user" | "viewer";
+  email_verified: boolean;
+  two_factor_enabled: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -42,19 +44,127 @@ export interface UpdateProjectInput {
 // Auth types
 export interface AuthResponse {
   user: User;
-  token: string;
+  access_token: string;
   refresh_token: string;
+  expires_in: number;
+  token_type: string;
 }
 
 export interface SignInInput {
   email: string;
   password: string;
+  remember_me?: boolean;
 }
 
 export interface SignUpInput {
   email: string;
   password: string;
   full_name: string;
+  confirm_password: string;
+  terms_accepted: boolean;
+}
+
+export interface OAuthProvider {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  url: string;
+}
+
+export interface OAuthSignInInput {
+  provider: 'google' | 'github' | 'microsoft';
+  code: string;
+  state?: string;
+}
+
+export interface RefreshTokenInput {
+  refresh_token: string;
+}
+
+export interface ForgotPasswordInput {
+  email: string;
+}
+
+export interface ResetPasswordInput {
+  token: string;
+  password: string;
+  confirm_password: string;
+}
+
+export interface VerifyEmailInput {
+  token: string;
+}
+
+export interface ResendVerificationInput {
+  email: string;
+}
+
+export interface TwoFactorSetup {
+  secret: string;
+  qr_code: string;
+  backup_codes: string[];
+}
+
+export interface TwoFactorVerifyInput {
+  code: string;
+  backup_code?: string;
+}
+
+export interface TwoFactorDisableInput {
+  password: string;
+  code: string;
+}
+
+export interface Session {
+  id: string;
+  user_id: string;
+  device_name: string;
+  device_type: 'desktop' | 'mobile' | 'tablet';
+  browser: string;
+  os: string;
+  ip_address: string;
+  location: string;
+  is_current: boolean;
+  last_activity: string;
+  created_at: string;
+  expires_at: string;
+}
+
+export interface DeviceInfo {
+  userAgent: string;
+  platform: string;
+  language: string;
+  timezone: string;
+  screen: {
+    width: number;
+    height: number;
+  };
+}
+
+export interface SecuritySettings {
+  two_factor_enabled: boolean;
+  email_verified: boolean;
+  password_last_changed: string;
+  login_notifications: boolean;
+  suspicious_activity_alerts: boolean;
+}
+
+export interface LoginAttempt {
+  id: string;
+  email: string;
+  ip_address: string;
+  user_agent: string;
+  success: boolean;
+  failure_reason?: string;
+  location: string;
+  timestamp: string;
+}
+
+export interface RateLimitInfo {
+  remaining: number;
+  reset_time: number;
+  limit: number;
 }
 
 // Agent types

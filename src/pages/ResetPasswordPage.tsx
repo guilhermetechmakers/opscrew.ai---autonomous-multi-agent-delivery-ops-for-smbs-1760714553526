@@ -6,46 +6,31 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { OAuthButtons } from "@/components/auth/OAuthButtons";
-import { Bot, Eye, EyeOff, Loader2 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { useSignUp } from "@/hooks/use-auth";
-import { signUpSchema, type SignUpFormData } from "@/lib/validations/auth";
-import { toast } from "sonner";
+import { Bot, Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useResetPassword } from "@/hooks/use-auth";
+import { resetPasswordSchema, type ResetPasswordFormData } from "@/lib/validations/auth";
 
-export default function SignupPage() {
+export default function ResetPasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const signUpMutation = useSignUp();
+  const resetPasswordMutation = useResetPassword();
+
+  const token = searchParams.get("token");
 
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      terms_accepted: false,
-    },
+  } = useForm<ResetPasswordFormData>({
+    resolver: zodResolver(resetPasswordSchema),
   });
 
   const password = watch("password");
-
-  const onSubmit = async (data: SignUpFormData) => {
-    try {
-      const response = await signUpMutation.mutateAsync(data);
-      if (response.data) {
-        toast.success("Account created successfully!");
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      // Error is handled by the mutation
-    }
-  };
 
   const getPasswordStrength = (password: string) => {
     if (!password) return { score: 0, label: "", color: "" };
@@ -71,6 +56,69 @@ export default function SignupPage() {
 
   const passwordStrength = getPasswordStrength(password || "");
 
+  const onSubmit = async (data: ResetPasswordFormData) => {
+    if (!token) {
+      return;
+    }
+
+    try {
+      await resetPasswordMutation.mutateAsync({
+        ...data,
+        token,
+      });
+      navigate("/login?reset=success");
+    } catch (error) {
+      // Error is handled by the mutation
+    }
+  };
+
+  if (!token) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <div className="flex items-center justify-between mb-8">
+            <Link to="/" className="flex items-center space-x-2">
+              <Bot className="h-8 w-8 text-primary" />
+              <span className="text-2xl font-bold">OpsCrew.ai</span>
+            </Link>
+            <ThemeToggle />
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Card>
+              <CardHeader className="text-center">
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900">
+                  <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
+                </div>
+                <CardTitle className="text-2xl">Invalid reset link</CardTitle>
+                <CardDescription>
+                  This password reset link is invalid or has expired
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Please request a new password reset link.
+                  </p>
+                  <Link
+                    to="/forgot-password"
+                    className="inline-flex items-center text-sm text-primary hover:underline"
+                  >
+                    Request new reset link
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -89,46 +137,20 @@ export default function SignupPage() {
         >
           <Card>
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Create account</CardTitle>
+              <CardTitle className="text-2xl">Reset password</CardTitle>
               <CardDescription>
-                Get started with OpsCrew.ai today
+                Enter your new password below
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="full_name">Full Name</Label>
-                  <Input
-                    id="full_name"
-                    type="text"
-                    placeholder="Enter your full name"
-                    className="input-focus"
-                    {...register("full_name")}
-                  />
-                  {errors.full_name && (
-                    <p className="text-sm text-destructive">{errors.full_name.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    className="input-focus"
-                    {...register("email")}
-                  />
-                  {errors.email && (
-                    <p className="text-sm text-destructive">{errors.email.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">New Password</Label>
                   <div className="relative">
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Create a password"
+                      placeholder="Enter your new password"
                       className="input-focus pr-10"
                       {...register("password")}
                     />
@@ -171,7 +193,7 @@ export default function SignupPage() {
                     <Input
                       id="confirm_password"
                       type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Confirm your password"
+                      placeholder="Confirm your new password"
                       className="input-focus pr-10"
                       {...register("confirm_password")}
                     />
@@ -193,28 +215,6 @@ export default function SignupPage() {
                     <p className="text-sm text-destructive">{errors.confirm_password.message}</p>
                   )}
                 </div>
-                <div className="space-y-2">
-                  <div className="flex items-start space-x-2">
-                    <Checkbox
-                      id="terms"
-                      {...register("terms_accepted")}
-                      className="mt-1"
-                    />
-                    <Label htmlFor="terms" className="text-sm leading-relaxed">
-                      I agree to the{" "}
-                      <Link to="/terms" className="text-primary hover:underline">
-                        Terms of Service
-                      </Link>{" "}
-                      and{" "}
-                      <Link to="/privacy" className="text-primary hover:underline">
-                        Privacy Policy
-                      </Link>
-                    </Label>
-                  </div>
-                  {errors.terms_accepted && (
-                    <p className="text-sm text-destructive">{errors.terms_accepted.message}</p>
-                  )}
-                </div>
                 <Button 
                   type="submit" 
                   className="w-full btn-primary"
@@ -223,28 +223,19 @@ export default function SignupPage() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating account...
+                      Resetting password...
                     </>
                   ) : (
-                    "Create Account"
+                    "Reset password"
                   )}
                 </Button>
               </form>
-              
-              <OAuthButtons 
-                mode="signup" 
-                onSuccess={() => navigate("/dashboard")}
-              />
-              
-              <div className="text-center">
-                <span className="text-sm text-muted-foreground">
-                  Already have an account?{" "}
-                </span>
+              <div className="flex items-center justify-center">
                 <Link
                   to="/login"
-                  className="text-sm text-primary hover:underline"
+                  className="inline-flex items-center text-sm text-primary hover:underline"
                 >
-                  Sign in
+                  Back to sign in
                 </Link>
               </div>
             </CardContent>

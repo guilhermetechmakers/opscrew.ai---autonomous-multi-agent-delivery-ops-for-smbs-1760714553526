@@ -1,10 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Toaster } from "@/components/ui/toaster";
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import AuthSettingsPage from "@/pages/AuthSettingsPage";
 import Dashboard from "@/pages/Dashboard";
 import AiIntakePage from "@/pages/AiIntakePage";
 import NotFound from "@/pages/NotFound";
@@ -25,17 +30,71 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="ui-theme">
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/ai-intake" element={<AiIntakePage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-        <Toaster />
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route 
+                path="/login" 
+                element={
+                  <ProtectedRoute requireAuth={false}>
+                    <LoginPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/signup" 
+                element={
+                  <ProtectedRoute requireAuth={false}>
+                    <SignupPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/forgot-password" 
+                element={
+                  <ProtectedRoute requireAuth={false}>
+                    <ForgotPasswordPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/reset-password" 
+                element={
+                  <ProtectedRoute requireAuth={false}>
+                    <ResetPasswordPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/auth-settings" 
+                element={
+                  <ProtectedRoute>
+                    <AuthSettingsPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/ai-intake" 
+                element={
+                  <ProtectedRoute>
+                    <AiIntakePage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+          <Toaster />
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
