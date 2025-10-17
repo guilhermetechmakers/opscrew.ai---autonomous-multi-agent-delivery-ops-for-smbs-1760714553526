@@ -12,6 +12,7 @@ import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import AuthSettingsPage from "@/pages/AuthSettingsPage";
 import Dashboard from "@/pages/Dashboard";
 import AiIntakePage from "@/pages/AiIntakePage";
+import ProjectSpinUpConsole from "@/pages/ProjectSpinUpConsole";
 import NotFound from "@/pages/NotFound";
 
 // React Query client with optimal defaults
@@ -87,6 +88,14 @@ export default function App() {
                 element={
                   <ProtectedRoute>
                     <AiIntakePage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/project-spinup" 
+                element={
+                  <ProtectedRoute>
+                    <ProjectSpinUpConsole />
                   </ProtectedRoute>
                 } 
               />

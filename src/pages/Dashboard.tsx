@@ -32,6 +32,12 @@ export default function Dashboard() {
                 AI Intake
               </Button>
             </Link>
+            <Link to="/project-spinup">
+              <Button variant="outline">
+                <Zap className="h-4 w-4 mr-2" />
+                Project Spin-Up
+              </Button>
+            </Link>
             <Button>New Project</Button>
           </div>
         </div>
