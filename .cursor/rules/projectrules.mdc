@@ -1,0 +1,103 @@
+---
+alwaysApply: true
+---
+
+# Project Cursor Rules
+
+This file contains project-specific development rules and guidelines.
+These rules will be automatically applied when working in this project with Cursor.
+
+## Tech Stack Requirements
+
+- **Framework:** React 18 with TypeScript
+- **Build Tool:** Vite with SWC plugin
+- **Styling:** Tailwind CSS v3 with CSS custom properties
+- **UI Components:** Shadcn/ui with Radix UI primitives
+- **Animations:** Motion library (NOT framer-motion)
+- **Icons:** Lucide React
+- **State Management:** TanStack React Query
+- **Forms:** React Hook Form with Zod validation
+- **HTTP Client:** Axios
+- **Notifications:** Sonner
+
+## Critical Setup Rules
+
+1. **ALWAYS run `npm install` before any build commands**
+2. Use Motion library for animations, NOT framer-motion
+3. Import Inter font in index.css
+4. Use Tailwind v3 with tailwind.config.js (not CSS-based config)
+5. Use `@/` path aliases for imports
+6. Use Shadcn components instead of custom UI components
+
+## Code Style
+
+- Write concise, technical TypeScript code
+- Use functional and declarative patterns (avoid classes)
+- Favor iteration and modularization over duplication
+- Use descriptive variable names with auxiliary verbs (isLoading, hasError)
+- Structure: exported components, subcomponents, helpers, types
+- Minimize `useEffect` and `useState`; favor React Server Components where possible
+
+## API Layer Pattern
+
+- Centralize API calls in `src/api/` directory
+- Use Axios with interceptors for auth and error handling
+- Create React Query hooks in `src/hooks/`
+- Implement proper error handling with toast notifications
+- Use TypeScript types for all API responses
+
+## Design System
+
+This project includes a `design_rules.md` file with pattern-specific guidelines.
+**Refer to design_rules.md for complete design requirements.**
+
+### 🌓 CRITICAL: Dark/Light Mode
+
+**THIS PROJECT MUST SUPPORT BOTH DARK AND LIGHT MODES**
+
+- Theme toggle is implemented and available in the UI
+- All colors use CSS custom properties (`hsl(var(--variable))`)
+- Never hardcode light-only or dark-only colors
+- Test all components in both themes
+- Theme provider available at `src/components/theme-provider.tsx`
+- Theme toggle available at `src/components/ui/theme-toggle.tsx`
+- Smooth transitions between themes (300ms)
+
+
+
+### General Design Requirements
+
+- Use modern, bold designs with unique layouts
+- Implement smooth animations and transitions
+- Ensure mobile-first responsive design
+- Add hover states and micro-interactions to all interactive elements
+- Use gradients and depth (shadows) for visual hierarchy
+- Maintain consistent spacing scale: 4px, 8px, 16px, 24px, 32px, 48px, 64px
+- Ensure accessibility (keyboard navigation, ARIA labels, color contrast in both themes)
+
+## Component Patterns
+
+- Wrap all pages with animation components
+- Use `cn()` utility for conditional classes
+- Implement loading skeletons (not spinners)
+- Create helpful empty states with illustrations
+- Add error boundaries for robust error handling
+
+## Performance & Best Practices
+
+- Optimize images: WebP format, lazy loading
+- Implement code splitting with dynamic imports
+- Use proper memoization to minimize re-renders
+- Debounce search inputs
+- Virtualize long lists
+- Respect prefers-reduced-motion
+
+## Testing
+
+- Write unit tests for components
+- Mock API interactions in tests
+- Test error scenarios and edge cases
+
+---
+
+For complete reference, see BUILD_GUIDE.md in the project root.
