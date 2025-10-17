@@ -31,7 +31,14 @@ import {
   MessageSquare,
   FileText,
   CreditCard,
-  Headphones
+  Headphones,
+  Sparkles,
+  Rocket,
+  Layers,
+  Palette,
+  Shield,
+  Monitor,
+  Cpu
 } from "lucide-react";
 
 interface ProjectConfig {
@@ -159,20 +166,42 @@ export default function ProjectSpinUpConsole() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Header */}
-      <header className="border-b border-border">
+      <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Bot className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">OpsCrew.ai</span>
-            <Badge variant="secondary" className="ml-2">Project Spin-Up</Badge>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="outline" onClick={() => window.history.back()}>
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center space-x-3"
+          >
+            <div className="relative">
+              <Bot className="h-8 w-8 text-primary" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-pulse" />
+            </div>
+            <div>
+              <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                OpsCrew.ai
+              </span>
+              <Badge variant="secondary" className="ml-3 bg-primary/10 text-primary border-primary/20">
+                <Sparkles className="h-3 w-3 mr-1" />
+                Project Spin-Up
+              </Badge>
+            </div>
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center space-x-4"
+          >
+            <Button 
+              variant="outline" 
+              onClick={() => window.history.back()}
+              className="hover:scale-105 transition-all duration-200"
+            >
               Back to Dashboard
             </Button>
-          </div>
+          </motion.div>
         </div>
       </header>
 
@@ -181,36 +210,61 @@ export default function ProjectSpinUpConsole() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-12"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold">Project Spin-Up Console</h1>
-            <div className="text-sm text-muted-foreground">
-              Step {currentStep} of {steps.length}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent mb-2">
+                Project Spin-Up Console
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                Automate your project setup with AI-powered provisioning
+              </p>
+            </div>
+            <div className="text-right">
+              <div className="text-sm text-muted-foreground mb-1">Progress</div>
+              <div className="text-2xl font-bold text-primary">
+                {currentStep} / {steps.length}
+              </div>
             </div>
           </div>
           
-          <div className="flex items-center space-x-4">
-            {steps.map((step, index) => (
-              <div key={step.id} className="flex items-center">
-                <div className={`
-                  flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium
-                  ${currentStep >= step.id 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'bg-muted text-muted-foreground'
-                  }
-                `}>
-                  {currentStep > step.id ? <CheckCircle className="h-4 w-4" /> : step.id}
-                </div>
-                <div className="ml-2">
-                  <div className="text-sm font-medium">{step.title}</div>
-                  <div className="text-xs text-muted-foreground">{step.description}</div>
-                </div>
-                {index < steps.length - 1 && (
-                  <div className="w-8 h-px bg-border mx-4" />
-                )}
-              </div>
-            ))}
+          <div className="relative">
+            <div className="absolute top-4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+            <div className="flex items-center justify-between">
+              {steps.map((step, index) => (
+                <motion.div 
+                  key={step.id} 
+                  className="flex flex-col items-center relative z-10"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <motion.div 
+                    className={`
+                      flex items-center justify-center w-12 h-12 rounded-full text-sm font-semibold
+                      transition-all duration-300 hover:scale-110
+                      ${currentStep >= step.id 
+                        ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/25' 
+                        : 'bg-card border-2 border-border text-muted-foreground hover:border-primary/50'
+                      }
+                    `}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {currentStep > step.id ? (
+                      <CheckCircle className="h-5 w-5" />
+                    ) : (
+                      step.id
+                    )}
+                  </motion.div>
+                  <div className="mt-3 text-center">
+                    <div className="text-sm font-semibold text-foreground">{step.title}</div>
+                    <div className="text-xs text-muted-foreground mt-1 max-w-24">{step.description}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </motion.div>
 
@@ -223,25 +277,28 @@ export default function ProjectSpinUpConsole() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Settings className="h-5 w-5 mr-2" />
+              <Card className="border-border/50 shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300">
+                <CardHeader className="bg-gradient-to-r from-card to-card/50 border-b border-border/50">
+                  <CardTitle className="flex items-center text-xl">
+                    <div className="p-2 rounded-lg bg-primary/10 mr-3">
+                      <Settings className="h-5 w-5 text-primary" />
+                    </div>
                     Project Configuration
                   </CardTitle>
-                  <CardDescription>
-                    Configure your project settings and infrastructure
+                  <CardDescription className="text-base">
+                    Configure your project settings and infrastructure with AI-powered recommendations
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-8">
                   <Tabs value={currentStep.toString()} className="w-full">
-                    <TabsList className="grid w-full grid-cols-5">
+                    <TabsList className="grid w-full grid-cols-5 bg-muted/50 p-1 rounded-lg">
                       {steps.map((step) => (
                         <TabsTrigger 
                           key={step.id} 
                           value={step.id.toString()}
                           onClick={() => setCurrentStep(step.id)}
                           disabled={currentStep < step.id}
+                          className="data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all duration-200 hover:scale-105"
                         >
                           {step.title}
                         </TabsTrigger>
@@ -249,22 +306,34 @@ export default function ProjectSpinUpConsole() {
                     </TabsList>
 
                     {/* Step 1: Project Details */}
-                    <TabsContent value="1" className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="project-name">Project Name</Label>
+                    <TabsContent value="1" className="space-y-8 mt-8">
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                      >
+                        <div className="space-y-3">
+                          <Label htmlFor="project-name" className="text-sm font-semibold flex items-center">
+                            <Rocket className="h-4 w-4 mr-2 text-primary" />
+                            Project Name
+                          </Label>
                           <Input
                             id="project-name"
-                            placeholder="Enter project name"
+                            placeholder="Enter your project name"
                             value={projectConfig.name}
                             onChange={(e) => setProjectConfig(prev => ({
                               ...prev,
                               name: e.target.value
                             }))}
+                            className="h-12 text-base focus:ring-2 focus:ring-primary/20 transition-all duration-200"
                           />
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="environment">Environment</Label>
+                        <div className="space-y-3">
+                          <Label htmlFor="environment" className="text-sm font-semibold flex items-center">
+                            <Layers className="h-4 w-4 mr-2 text-primary" />
+                            Environment
+                          </Label>
                           <Select
                             value={projectConfig.environment}
                             onValueChange={(value) => setProjectConfig(prev => ({
@@ -272,7 +341,7 @@ export default function ProjectSpinUpConsole() {
                               environment: value
                             }))}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="h-12 text-base">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -282,47 +351,86 @@ export default function ProjectSpinUpConsole() {
                             </SelectContent>
                           </Select>
                         </div>
-                      </div>
+                      </motion.div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="description">Project Description</Label>
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="space-y-3"
+                      >
+                        <Label htmlFor="description" className="text-sm font-semibold flex items-center">
+                          <FileText className="h-4 w-4 mr-2 text-primary" />
+                          Project Description
+                        </Label>
                         <Textarea
                           id="description"
-                          placeholder="Describe your project..."
+                          placeholder="Describe your project goals, features, and requirements..."
                           value={projectConfig.description}
                           onChange={(e) => setProjectConfig(prev => ({
                             ...prev,
                             description: e.target.value
                           }))}
+                          className="min-h-24 text-base focus:ring-2 focus:ring-primary/20 transition-all duration-200"
                         />
-                      </div>
+                      </motion.div>
 
-                      <div className="space-y-4">
-                        <Label>Technology Stack</Label>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="space-y-6"
+                      >
+                        <Label className="text-sm font-semibold flex items-center">
+                          <Code className="h-4 w-4 mr-2 text-primary" />
+                          Technology Stack
+                        </Label>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                           {techStackOptions.map((tech) => (
-                            <div
+                            <motion.div
                               key={tech.id}
-                              className="flex items-center space-x-2 p-3 border border-border rounded-lg hover:bg-muted/50 cursor-pointer"
+                              className={`
+                                flex items-center space-x-3 p-4 border rounded-xl cursor-pointer transition-all duration-200
+                                hover:scale-105 hover:shadow-md group
+                                ${projectConfig.techStack.includes(tech.id)
+                                  ? 'border-primary bg-primary/5 shadow-sm'
+                                  : 'border-border hover:border-primary/50 hover:bg-muted/30'
+                                }
+                              `}
                               onClick={() => handleTechStackToggle(tech.id)}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
                             >
                               <Checkbox
                                 checked={projectConfig.techStack.includes(tech.id)}
                                 onChange={() => handleTechStackToggle(tech.id)}
+                                className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                               />
-                              <tech.icon className="h-4 w-4" />
-                              <span className="text-sm">{tech.label}</span>
-                            </div>
+                              <tech.icon className={`h-5 w-5 transition-colors ${
+                                projectConfig.techStack.includes(tech.id) 
+                                  ? 'text-primary' 
+                                  : 'text-muted-foreground group-hover:text-foreground'
+                              }`} />
+                              <span className="text-sm font-medium">{tech.label}</span>
+                            </motion.div>
                           ))}
                         </div>
-                      </div>
+                      </motion.div>
                     </TabsContent>
 
                     {/* Step 2: Repository Setup */}
-                    <TabsContent value="2" className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="repo-name">Repository Name</Label>
+                    <TabsContent value="2" className="space-y-8 mt-8">
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                      >
+                        <div className="space-y-3">
+                          <Label htmlFor="repo-name" className="text-sm font-semibold flex items-center">
+                            <GitBranch className="h-4 w-4 mr-2 text-primary" />
+                            Repository Name
+                          </Label>
                           <Input
                             id="repo-name"
                             placeholder="my-awesome-project"
@@ -331,10 +439,14 @@ export default function ProjectSpinUpConsole() {
                               ...prev,
                               repository: { ...prev.repository, name: e.target.value }
                             }))}
+                            className="h-12 text-base focus:ring-2 focus:ring-primary/20 transition-all duration-200"
                           />
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="visibility">Visibility</Label>
+                        <div className="space-y-3">
+                          <Label htmlFor="visibility" className="text-sm font-semibold flex items-center">
+                            <Shield className="h-4 w-4 mr-2 text-primary" />
+                            Visibility
+                          </Label>
                           <Select
                             value={projectConfig.repository.visibility}
                             onValueChange={(value: 'private' | 'public') => setProjectConfig(prev => ({
@@ -342,7 +454,7 @@ export default function ProjectSpinUpConsole() {
                               repository: { ...prev.repository, visibility: value }
                             }))}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="h-12 text-base">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -351,70 +463,124 @@ export default function ProjectSpinUpConsole() {
                             </SelectContent>
                           </Select>
                         </div>
-                      </div>
+                      </motion.div>
 
-                      <div className="space-y-4">
-                        <Label>Project Template</Label>
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="space-y-6"
+                      >
+                        <Label className="text-sm font-semibold flex items-center">
+                          <Layers className="h-4 w-4 mr-2 text-primary" />
+                          Project Template
+                        </Label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {templateOptions.map((template) => (
-                            <div
+                            <motion.div
                               key={template.id}
-                              className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                                projectConfig.repository.template === template.id
-                                  ? 'border-primary bg-primary/5'
-                                  : 'border-border hover:border-primary/50'
-                              }`}
+                              className={`
+                                p-6 border rounded-xl cursor-pointer transition-all duration-200
+                                hover:scale-105 hover:shadow-lg group
+                                ${projectConfig.repository.template === template.id
+                                  ? 'border-primary bg-primary/5 shadow-md'
+                                  : 'border-border hover:border-primary/50 hover:bg-muted/30'
+                                }
+                              `}
                               onClick={() => setProjectConfig(prev => ({
                                 ...prev,
                                 repository: { ...prev.repository, template: template.id }
                               }))}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
                             >
-                              <div className="flex items-center space-x-2 mb-2">
-                                <GitBranch className="h-4 w-4" />
-                                <span className="font-medium">{template.label}</span>
+                              <div className="flex items-center space-x-3 mb-3">
+                                <div className={`p-2 rounded-lg ${
+                                  projectConfig.repository.template === template.id
+                                    ? 'bg-primary/10'
+                                    : 'bg-muted group-hover:bg-primary/5'
+                                }`}>
+                                  <GitBranch className={`h-4 w-4 ${
+                                    projectConfig.repository.template === template.id
+                                      ? 'text-primary'
+                                      : 'text-muted-foreground group-hover:text-primary'
+                                  }`} />
+                                </div>
+                                <span className="font-semibold text-base">{template.label}</span>
                               </div>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-sm text-muted-foreground leading-relaxed">
                                 {template.description}
                               </p>
-                            </div>
+                            </motion.div>
                           ))}
                         </div>
-                      </div>
+                      </motion.div>
                     </TabsContent>
 
                     {/* Step 3: Infrastructure */}
-                    <TabsContent value="3" className="space-y-6">
-                      <div className="space-y-4">
-                        <Label>Infrastructure Provider</Label>
+                    <TabsContent value="3" className="space-y-8 mt-8">
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="space-y-6"
+                      >
+                        <Label className="text-sm font-semibold flex items-center">
+                          <Cloud className="h-4 w-4 mr-2 text-primary" />
+                          Infrastructure Provider
+                        </Label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {infrastructureProviders.map((provider) => (
-                            <div
+                            <motion.div
                               key={provider.id}
-                              className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                                projectConfig.infrastructure.provider === provider.id
-                                  ? 'border-primary bg-primary/5'
-                                  : 'border-border hover:border-primary/50'
-                              }`}
+                              className={`
+                                p-6 border rounded-xl cursor-pointer transition-all duration-200
+                                hover:scale-105 hover:shadow-lg group
+                                ${projectConfig.infrastructure.provider === provider.id
+                                  ? 'border-primary bg-primary/5 shadow-md'
+                                  : 'border-border hover:border-primary/50 hover:bg-muted/30'
+                                }
+                              `}
                               onClick={() => setProjectConfig(prev => ({
                                 ...prev,
                                 infrastructure: { ...prev.infrastructure, provider: provider.id }
                               }))}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
                             >
-                              <div className="flex items-center space-x-2 mb-2">
-                                <Cloud className="h-4 w-4" />
-                                <span className="font-medium">{provider.label}</span>
+                              <div className="flex items-center space-x-3 mb-3">
+                                <div className={`p-2 rounded-lg ${
+                                  projectConfig.infrastructure.provider === provider.id
+                                    ? 'bg-primary/10'
+                                    : 'bg-muted group-hover:bg-primary/5'
+                                }`}>
+                                  <Cloud className={`h-4 w-4 ${
+                                    projectConfig.infrastructure.provider === provider.id
+                                      ? 'text-primary'
+                                      : 'text-muted-foreground group-hover:text-primary'
+                                  }`} />
+                                </div>
+                                <span className="font-semibold text-base">{provider.label}</span>
                               </div>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-sm text-muted-foreground leading-relaxed">
                                 {provider.description}
                               </p>
-                            </div>
+                            </motion.div>
                           ))}
                         </div>
-                      </div>
+                      </motion.div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="region">Region</Label>
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                      >
+                        <div className="space-y-3">
+                          <Label htmlFor="region" className="text-sm font-semibold flex items-center">
+                            <Globe className="h-4 w-4 mr-2 text-primary" />
+                            Region
+                          </Label>
                           <Select
                             value={projectConfig.infrastructure.region}
                             onValueChange={(value) => setProjectConfig(prev => ({
@@ -422,7 +588,7 @@ export default function ProjectSpinUpConsole() {
                               infrastructure: { ...prev.infrastructure, region: value }
                             }))}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="h-12 text-base">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -433,8 +599,11 @@ export default function ProjectSpinUpConsole() {
                             </SelectContent>
                           </Select>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="tier">Tier</Label>
+                        <div className="space-y-3">
+                          <Label htmlFor="tier" className="text-sm font-semibold flex items-center">
+                            <Cpu className="h-4 w-4 mr-2 text-primary" />
+                            Tier
+                          </Label>
                           <Select
                             value={projectConfig.infrastructure.tier}
                             onValueChange={(value) => setProjectConfig(prev => ({
@@ -442,7 +611,7 @@ export default function ProjectSpinUpConsole() {
                               infrastructure: { ...prev.infrastructure, tier: value }
                             }))}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="h-12 text-base">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -452,12 +621,17 @@ export default function ProjectSpinUpConsole() {
                             </SelectContent>
                           </Select>
                         </div>
-                      </div>
+                      </motion.div>
                     </TabsContent>
 
                     {/* Step 4: Client Portal */}
-                    <TabsContent value="4" className="space-y-6">
-                      <div className="flex items-center space-x-2">
+                    <TabsContent value="4" className="space-y-8 mt-8">
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="flex items-center space-x-3 p-4 bg-muted/30 rounded-xl"
+                      >
                         <Checkbox
                           id="enable-portal"
                           checked={projectConfig.clientPortal.enabled}
@@ -465,15 +639,27 @@ export default function ProjectSpinUpConsole() {
                             ...prev,
                             clientPortal: { ...prev.clientPortal, enabled: checked as boolean }
                           }))}
+                          className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                         />
-                        <Label htmlFor="enable-portal">Enable Client Portal</Label>
-                      </div>
+                        <Label htmlFor="enable-portal" className="text-base font-semibold flex items-center">
+                          <Monitor className="h-4 w-4 mr-2 text-primary" />
+                          Enable Client Portal
+                        </Label>
+                      </motion.div>
 
                       {projectConfig.clientPortal.enabled && (
-                        <div className="space-y-6">
-                          <div className="space-y-4">
-                            <Label>Portal Features</Label>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <motion.div 
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.2 }}
+                          className="space-y-8"
+                        >
+                          <div className="space-y-6">
+                            <Label className="text-sm font-semibold flex items-center">
+                              <Zap className="h-4 w-4 mr-2 text-primary" />
+                              Portal Features
+                            </Label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               {[
                                 { id: "dashboard", label: "Project Dashboard", icon: BarChart3 },
                                 { id: "progress", label: "Progress Tracking", icon: Activity },
@@ -482,9 +668,16 @@ export default function ProjectSpinUpConsole() {
                                 { id: "billing", label: "Billing & Invoicing", icon: CreditCard },
                                 { id: "support", label: "Support Tickets", icon: Headphones }
                               ].map((feature) => (
-                                <div
+                                <motion.div
                                   key={feature.id}
-                                  className="flex items-center space-x-2 p-3 border border-border rounded-lg hover:bg-muted/50 cursor-pointer"
+                                  className={`
+                                    flex items-center space-x-3 p-4 border rounded-xl cursor-pointer transition-all duration-200
+                                    hover:scale-105 hover:shadow-md group
+                                    ${projectConfig.clientPortal.features.includes(feature.id)
+                                      ? 'border-primary bg-primary/5 shadow-sm'
+                                      : 'border-border hover:border-primary/50 hover:bg-muted/30'
+                                    }
+                                  `}
                                   onClick={() => {
                                     const features = projectConfig.clientPortal.features;
                                     const newFeatures = features.includes(feature.id)
@@ -495,124 +688,219 @@ export default function ProjectSpinUpConsole() {
                                       clientPortal: { ...prev.clientPortal, features: newFeatures }
                                     }));
                                   }}
+                                  whileHover={{ scale: 1.02 }}
+                                  whileTap={{ scale: 0.98 }}
                                 >
                                   <Checkbox
                                     checked={projectConfig.clientPortal.features.includes(feature.id)}
                                     onChange={() => {}}
+                                    className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                   />
-                                  <feature.icon className="h-4 w-4" />
-                                  <span className="text-sm">{feature.label}</span>
-                                </div>
+                                  <feature.icon className={`h-5 w-5 transition-colors ${
+                                    projectConfig.clientPortal.features.includes(feature.id) 
+                                      ? 'text-primary' 
+                                      : 'text-muted-foreground group-hover:text-foreground'
+                                  }`} />
+                                  <span className="text-sm font-medium">{feature.label}</span>
+                                </motion.div>
                               ))}
                             </div>
                           </div>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="primary-color">Primary Color</Label>
-                              <Input
-                                id="primary-color"
-                                type="color"
-                                value={projectConfig.clientPortal.branding.primaryColor}
-                                onChange={(e) => setProjectConfig(prev => ({
-                                  ...prev,
-                                  clientPortal: {
-                                    ...prev.clientPortal,
-                                    branding: {
-                                      ...prev.clientPortal.branding,
-                                      primaryColor: e.target.value
-                                    }
-                                  }
-                                }))}
-                              />
+                          <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="space-y-6"
+                          >
+                            <Label className="text-sm font-semibold flex items-center">
+                              <Palette className="h-4 w-4 mr-2 text-primary" />
+                              Branding Colors
+                            </Label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div className="space-y-3">
+                                <Label htmlFor="primary-color" className="text-sm font-medium">Primary Color</Label>
+                                <div className="flex items-center space-x-3">
+                                  <Input
+                                    id="primary-color"
+                                    type="color"
+                                    value={projectConfig.clientPortal.branding.primaryColor}
+                                    onChange={(e) => setProjectConfig(prev => ({
+                                      ...prev,
+                                      clientPortal: {
+                                        ...prev.clientPortal,
+                                        branding: {
+                                          ...prev.clientPortal.branding,
+                                          primaryColor: e.target.value
+                                        }
+                                      }
+                                    }))}
+                                    className="w-16 h-12 p-1 border-2 border-border rounded-lg cursor-pointer hover:border-primary/50 transition-colors"
+                                  />
+                                  <div className="flex-1">
+                                    <Input
+                                      value={projectConfig.clientPortal.branding.primaryColor}
+                                      onChange={(e) => setProjectConfig(prev => ({
+                                        ...prev,
+                                        clientPortal: {
+                                          ...prev.clientPortal,
+                                          branding: {
+                                            ...prev.clientPortal.branding,
+                                            primaryColor: e.target.value
+                                          }
+                                        }
+                                      }))}
+                                      className="h-12 text-base font-mono"
+                                      placeholder="#3B82F6"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="space-y-3">
+                                <Label htmlFor="secondary-color" className="text-sm font-medium">Secondary Color</Label>
+                                <div className="flex items-center space-x-3">
+                                  <Input
+                                    id="secondary-color"
+                                    type="color"
+                                    value={projectConfig.clientPortal.branding.secondaryColor}
+                                    onChange={(e) => setProjectConfig(prev => ({
+                                      ...prev,
+                                      clientPortal: {
+                                        ...prev.clientPortal,
+                                        branding: {
+                                          ...prev.clientPortal.branding,
+                                          secondaryColor: e.target.value
+                                        }
+                                      }
+                                    }))}
+                                    className="w-16 h-12 p-1 border-2 border-border rounded-lg cursor-pointer hover:border-primary/50 transition-colors"
+                                  />
+                                  <div className="flex-1">
+                                    <Input
+                                      value={projectConfig.clientPortal.branding.secondaryColor}
+                                      onChange={(e) => setProjectConfig(prev => ({
+                                        ...prev,
+                                        clientPortal: {
+                                          ...prev.clientPortal,
+                                          branding: {
+                                            ...prev.clientPortal.branding,
+                                            secondaryColor: e.target.value
+                                          }
+                                        }
+                                      }))}
+                                      className="h-12 text-base font-mono"
+                                      placeholder="#1E40AF"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
                             </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="secondary-color">Secondary Color</Label>
-                              <Input
-                                id="secondary-color"
-                                type="color"
-                                value={projectConfig.clientPortal.branding.secondaryColor}
-                                onChange={(e) => setProjectConfig(prev => ({
-                                  ...prev,
-                                  clientPortal: {
-                                    ...prev.clientPortal,
-                                    branding: {
-                                      ...prev.clientPortal.branding,
-                                      secondaryColor: e.target.value
-                                    }
-                                  }
-                                }))}
-                              />
-                            </div>
-                          </div>
-                        </div>
+                          </motion.div>
+                        </motion.div>
                       )}
                     </TabsContent>
 
                     {/* Step 5: Review & Deploy */}
-                    <TabsContent value="5" className="space-y-6">
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Configuration Summary</h3>
-                        <div className="space-y-3">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Project Name:</span>
-                            <span className="font-medium">{projectConfig.name || "Not specified"}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Environment:</span>
-                            <span className="font-medium capitalize">{projectConfig.environment}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Repository:</span>
-                            <span className="font-medium">{projectConfig.repository.name || "Not specified"}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Template:</span>
-                            <span className="font-medium">{projectConfig.repository.template}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Infrastructure:</span>
-                            <span className="font-medium">{projectConfig.infrastructure.provider}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Client Portal:</span>
-                            <span className="font-medium">
-                              {projectConfig.clientPortal.enabled ? "Enabled" : "Disabled"}
-                            </span>
+                    <TabsContent value="5" className="space-y-8 mt-8">
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="space-y-6"
+                      >
+                        <h3 className="text-xl font-bold flex items-center">
+                          <CheckCircle className="h-5 w-5 mr-2 text-primary" />
+                          Configuration Summary
+                        </h3>
+                        <div className="bg-muted/30 rounded-xl p-6 space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="flex justify-between items-center py-2 border-b border-border/50">
+                              <span className="text-muted-foreground font-medium">Project Name:</span>
+                              <span className="font-semibold text-foreground">{projectConfig.name || "Not specified"}</span>
+                            </div>
+                            <div className="flex justify-between items-center py-2 border-b border-border/50">
+                              <span className="text-muted-foreground font-medium">Environment:</span>
+                              <Badge variant="outline" className="capitalize">{projectConfig.environment}</Badge>
+                            </div>
+                            <div className="flex justify-between items-center py-2 border-b border-border/50">
+                              <span className="text-muted-foreground font-medium">Repository:</span>
+                              <span className="font-semibold text-foreground">{projectConfig.repository.name || "Not specified"}</span>
+                            </div>
+                            <div className="flex justify-between items-center py-2 border-b border-border/50">
+                              <span className="text-muted-foreground font-medium">Template:</span>
+                              <Badge variant="secondary">{projectConfig.repository.template}</Badge>
+                            </div>
+                            <div className="flex justify-between items-center py-2 border-b border-border/50">
+                              <span className="text-muted-foreground font-medium">Infrastructure:</span>
+                              <Badge variant="outline">{projectConfig.infrastructure.provider}</Badge>
+                            </div>
+                            <div className="flex justify-between items-center py-2 border-b border-border/50">
+                              <span className="text-muted-foreground font-medium">Client Portal:</span>
+                              <Badge variant={projectConfig.clientPortal.enabled ? "default" : "secondary"}>
+                                {projectConfig.clientPortal.enabled ? "Enabled" : "Disabled"}
+                              </Badge>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </motion.div>
 
                       {isProvisioning && (
-                        <div className="space-y-4">
-                          <div className="flex items-center space-x-2">
-                            <Clock className="h-4 w-4 animate-spin" />
-                            <span className="text-sm font-medium">Provisioning your project...</span>
+                        <motion.div 
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.2 }}
+                          className="space-y-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/20"
+                        >
+                          <div className="flex items-center space-x-3">
+                            <div className="p-2 rounded-lg bg-primary/10">
+                              <Clock className="h-5 w-5 animate-spin text-primary" />
+                            </div>
+                            <div>
+                              <span className="text-lg font-semibold">Provisioning your project...</span>
+                              <p className="text-sm text-muted-foreground">This may take a few minutes</p>
+                            </div>
                           </div>
-                          <Progress value={provisioningProgress} className="w-full" />
-                          <p className="text-sm text-muted-foreground">
-                            {provisioningProgress}% complete
-                          </p>
-                        </div>
+                          <div className="space-y-3">
+                            <Progress value={provisioningProgress} className="w-full h-3" />
+                            <div className="flex justify-between items-center">
+                              <p className="text-sm text-muted-foreground">
+                                {provisioningProgress}% complete
+                              </p>
+                              <span className="text-sm font-mono text-primary">
+                                {Math.round(provisioningProgress)}%
+                              </span>
+                            </div>
+                          </div>
+                        </motion.div>
                       )}
 
                       {provisioningProgress === 100 && (
-                        <div className="space-y-4">
-                          <div className="flex items-center space-x-2 text-green-600">
-                            <CheckCircle className="h-5 w-5" />
-                            <span className="font-medium">Project provisioned successfully!</span>
+                        <motion.div 
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                          className="space-y-6 bg-gradient-to-r from-green-500/10 to-green-600/10 rounded-xl p-6 border border-green-500/20"
+                        >
+                          <div className="flex items-center space-x-3">
+                            <div className="p-2 rounded-lg bg-green-500/10">
+                              <CheckCircle className="h-6 w-6 text-green-600" />
+                            </div>
+                            <div>
+                              <span className="text-lg font-bold text-green-600">Project provisioned successfully!</span>
+                              <p className="text-sm text-muted-foreground">Your project is ready to use</p>
+                            </div>
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <Button className="w-full">
-                              <ExternalLink className="h-4 w-4 mr-2" />
+                            <Button className="w-full h-12 text-base hover:scale-105 transition-all duration-200">
+                              <ExternalLink className="h-5 w-5 mr-2" />
                               View Repository
                             </Button>
-                            <Button variant="outline" className="w-full">
-                              <Globe className="h-4 w-4 mr-2" />
+                            <Button variant="outline" className="w-full h-12 text-base hover:scale-105 transition-all duration-200">
+                              <Globe className="h-5 w-5 mr-2" />
                               Open Client Portal
                             </Button>
                           </div>
-                        </div>
+                        </motion.div>
                       )}
                     </TabsContent>
                   </Tabs>
@@ -629,36 +917,38 @@ export default function ProjectSpinUpConsole() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Zap className="h-5 w-5 mr-2" />
+              <Card className="border-border/50 shadow-lg hover:shadow-xl transition-all duration-300">
+                <CardHeader className="bg-gradient-to-r from-card to-card/50 border-b border-border/50">
+                  <CardTitle className="flex items-center text-lg">
+                    <div className="p-2 rounded-lg bg-primary/10 mr-3">
+                      <Zap className="h-5 w-5 text-primary" />
+                    </div>
                     Quick Actions
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="p-6 space-y-3">
                   <Button 
-                    className="w-full justify-start" 
+                    className="w-full justify-start h-12 text-base hover:scale-105 transition-all duration-200" 
                     variant="outline"
                     onClick={() => setCurrentStep(1)}
                   >
-                    <Plus className="h-4 w-4 mr-2" />
+                    <Plus className="h-4 w-4 mr-3" />
                     New Project
                   </Button>
                   <Button 
-                    className="w-full justify-start" 
+                    className="w-full justify-start h-12 text-base hover:scale-105 transition-all duration-200" 
                     variant="outline"
                     onClick={() => setCurrentStep(2)}
                   >
-                    <GitBranch className="h-4 w-4 mr-2" />
+                    <GitBranch className="h-4 w-4 mr-3" />
                     Clone Repository
                   </Button>
                   <Button 
-                    className="w-full justify-start" 
+                    className="w-full justify-start h-12 text-base hover:scale-105 transition-all duration-200" 
                     variant="outline"
                     onClick={() => setCurrentStep(3)}
                   >
-                    <Server className="h-4 w-4 mr-2" />
+                    <Server className="h-4 w-4 mr-3" />
                     Deploy Infrastructure
                   </Button>
                 </CardContent>
@@ -671,39 +961,62 @@ export default function ProjectSpinUpConsole() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Activity className="h-5 w-5 mr-2" />
+              <Card className="border-border/50 shadow-lg hover:shadow-xl transition-all duration-300">
+                <CardHeader className="bg-gradient-to-r from-card to-card/50 border-b border-border/50">
+                  <CardTitle className="flex items-center text-lg">
+                    <div className="p-2 rounded-lg bg-primary/10 mr-3">
+                      <Activity className="h-5 w-5 text-primary" />
+                    </div>
                     Project Status
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Repository</span>
-                      <Badge variant="outline">Pending</Badge>
+                <CardContent className="p-6 space-y-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm font-medium flex items-center">
+                        <GitBranch className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Repository
+                      </span>
+                      <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+                        Pending
+                      </Badge>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Infrastructure</span>
-                      <Badge variant="outline">Pending</Badge>
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm font-medium flex items-center">
+                        <Server className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Infrastructure
+                      </span>
+                      <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+                        Pending
+                      </Badge>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Client Portal</span>
-                      <Badge variant="outline">Pending</Badge>
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm font-medium flex items-center">
+                        <Monitor className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Client Portal
+                      </span>
+                      <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+                        Pending
+                      </Badge>
                     </div>
                   </div>
                   
-                  <Separator />
+                  <Separator className="bg-border/50" />
                   
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Total Cost</span>
-                      <span className="text-sm font-mono">$0.00/month</span>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm font-semibold flex items-center">
+                        <CreditCard className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Total Cost
+                      </span>
+                      <span className="text-lg font-mono font-bold text-primary">$0.00/month</span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Estimated Time</span>
-                      <span className="text-sm">2-5 minutes</span>
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm font-semibold flex items-center">
+                        <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Estimated Time
+                      </span>
+                      <span className="text-sm font-medium">2-5 minutes</span>
                     </div>
                   </div>
                 </CardContent>
@@ -716,21 +1029,21 @@ export default function ProjectSpinUpConsole() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex space-x-2">
+              <Card className="border-border/50 shadow-lg hover:shadow-xl transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className="flex space-x-3">
                     <Button
                       variant="outline"
                       onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
                       disabled={currentStep === 1}
-                      className="flex-1"
+                      className="flex-1 h-12 text-base hover:scale-105 transition-all duration-200"
                     >
                       Previous
                     </Button>
                     {currentStep < 5 ? (
                       <Button
                         onClick={() => setCurrentStep(Math.min(5, currentStep + 1))}
-                        className="flex-1"
+                        className="flex-1 h-12 text-base hover:scale-105 transition-all duration-200"
                       >
                         Next
                         <ArrowRight className="h-4 w-4 ml-2" />
@@ -739,7 +1052,7 @@ export default function ProjectSpinUpConsole() {
                       <Button
                         onClick={handleProvision}
                         disabled={isProvisioning || !projectConfig.name}
-                        className="flex-1"
+                        className="flex-1 h-12 text-base hover:scale-105 transition-all duration-200 disabled:hover:scale-100"
                       >
                         {isProvisioning ? (
                           <>
@@ -748,7 +1061,7 @@ export default function ProjectSpinUpConsole() {
                           </>
                         ) : (
                           <>
-                            <Zap className="h-4 w-4 mr-2" />
+                            <Rocket className="h-4 w-4 mr-2" />
                             Deploy Project
                           </>
                         )}
