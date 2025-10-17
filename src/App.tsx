@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Toaster } from "@/components/ui/toaster";
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
@@ -14,6 +13,7 @@ import Dashboard from "@/pages/Dashboard";
 import AiIntakePage from "@/pages/AiIntakePage";
 import ProjectSpinUpConsole from "@/pages/ProjectSpinUpConsole";
 import SprintTaskPlanner from "@/pages/SprintTaskPlanner";
+import MeetingsComms from "@/pages/MeetingsComms";
 import NotFound from "@/pages/NotFound";
 
 // React Query client with optimal defaults
@@ -36,78 +36,16 @@ export default function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<LandingPage />} />
-              <Route 
-                path="/login" 
-                element={
-                  <ProtectedRoute requireAuth={false}>
-                    <LoginPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/signup" 
-                element={
-                  <ProtectedRoute requireAuth={false}>
-                    <SignupPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/forgot-password" 
-                element={
-                  <ProtectedRoute requireAuth={false}>
-                    <ForgotPasswordPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/reset-password" 
-                element={
-                  <ProtectedRoute requireAuth={false}>
-                    <ResetPasswordPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/auth-settings" 
-                element={
-                  <ProtectedRoute>
-                    <AuthSettingsPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/ai-intake" 
-                element={
-                  <ProtectedRoute>
-                    <AiIntakePage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/project-spinup" 
-                element={
-                  <ProtectedRoute>
-                    <ProjectSpinUpConsole />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/sprint-task-planner" 
-                element={
-                  <ProtectedRoute>
-                    <SprintTaskPlanner />
-                  </ProtectedRoute>
-                } 
-              />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route path="/auth-settings" element={<AuthSettingsPage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/ai-intake" element={<AiIntakePage />} />
+              <Route path="/project-spinup" element={<ProjectSpinUpConsole />} />
+              <Route path="/sprint-task-planner" element={<SprintTaskPlanner />} />
+              <Route path="/meetings-comms" element={<MeetingsComms />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

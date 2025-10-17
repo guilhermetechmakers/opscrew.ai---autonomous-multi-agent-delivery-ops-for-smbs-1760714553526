@@ -39,7 +39,7 @@ import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
 import { SessionManagement } from "@/components/auth/SessionManagement";
 
 export default function AuthSettingsPage() {
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, isAuthenticated } = useAuth();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -129,6 +129,30 @@ export default function AuthSettingsPage() {
             onCancel={() => setShowTwoFactorSetup(false)}
           />
         </div>
+      </div>
+    );
+  }
+
+  // Show message if user is not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Shield className="h-5 w-5" />
+              <span>Authentication Required</span>
+            </CardTitle>
+            <CardDescription>
+              Please sign in to access your security settings.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild className="w-full">
+              <a href="/login">Sign In</a>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }

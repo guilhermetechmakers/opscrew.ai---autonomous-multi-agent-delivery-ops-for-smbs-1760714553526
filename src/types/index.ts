@@ -702,3 +702,195 @@ export interface ProjectSpinUpState {
   provisioningStatus?: ProvisioningStatus;
   errors: Record<string, string>;
 }
+
+// Meetings & Communications Types
+export interface Meeting {
+  id: string;
+  title: string;
+  description: string;
+  project_id: string;
+  meeting_type: "standup" | "sprint_planning" | "retrospective" | "client_call" | "internal" | "other";
+  status: "scheduled" | "in_progress" | "completed" | "cancelled";
+  start_time: string;
+  end_time: string;
+  duration: number; // in minutes
+  participants: MeetingParticipant[];
+  meeting_url?: string;
+  recording_url?: string;
+  agenda: string[];
+  notes?: string;
+  summary?: MeetingSummary;
+  created_at: string;
+  updated_at: string;
+  created_by: string;
+}
+
+export interface MeetingParticipant {
+  id: string;
+  user_id: string;
+  name: string;
+  email: string;
+  role: "organizer" | "attendee" | "optional";
+  status: "invited" | "accepted" | "declined" | "tentative";
+  joined_at?: string;
+  left_at?: string;
+  attendance_duration?: number; // in minutes
+}
+
+export interface MeetingSummary {
+  id: string;
+  meeting_id: string;
+  status: "generating" | "completed" | "failed";
+  key_points: string[];
+  action_items: ActionItem[];
+  decisions: Decision[];
+  next_steps: string[];
+  sentiment: "positive" | "neutral" | "negative";
+  confidence_score: number; // 0-100
+  generated_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ActionItem {
+  id: string;
+  title: string;
+  description: string;
+  assignee_id: string;
+  assignee_name: string;
+  due_date: string;
+  priority: "low" | "medium" | "high" | "urgent";
+  status: "pending" | "in_progress" | "completed" | "cancelled";
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Decision {
+  id: string;
+  title: string;
+  description: string;
+  decision_maker: string;
+  rationale: string;
+  impact: "low" | "medium" | "high";
+  created_at: string;
+}
+
+export interface CreateMeetingInput {
+  title: string;
+  description: string;
+  project_id: string;
+  meeting_type: "standup" | "sprint_planning" | "retrospective" | "client_call" | "internal" | "other";
+  start_time: string;
+  end_time: string;
+  participants: Array<{
+    user_id: string;
+    role: "organizer" | "attendee" | "optional";
+  }>;
+  agenda: string[];
+  meeting_url?: string;
+}
+
+export interface UpdateMeetingInput {
+  id: string;
+  title?: string;
+  description?: string;
+  meeting_type?: "standup" | "sprint_planning" | "retrospective" | "client_call" | "internal" | "other";
+  start_time?: string;
+  end_time?: string;
+  participants?: Array<{
+    user_id: string;
+    role: "organizer" | "attendee" | "optional";
+  }>;
+  agenda?: string[];
+  meeting_url?: string;
+  notes?: string;
+}
+
+export interface Communication {
+  id: string;
+  type: "email" | "slack" | "teams" | "discord" | "other";
+  channel: string;
+  project_id: string;
+  sender_id: string;
+  sender_name: string;
+  recipient_id?: string;
+  recipient_name?: string;
+  subject: string;
+  content: string;
+  status: "draft" | "sent" | "delivered" | "read" | "failed";
+  priority: "low" | "medium" | "high" | "urgent";
+  scheduled_at?: string;
+  sent_at?: string;
+  read_at?: string;
+  metadata?: Record<string, any>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateCommunicationInput {
+  type: "email" | "slack" | "teams" | "discord" | "other";
+  channel: string;
+  project_id: string;
+  recipient_id?: string;
+  subject: string;
+  content: string;
+  priority: "low" | "medium" | "high" | "urgent";
+  scheduled_at?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface UpdateCommunicationInput {
+  id: string;
+  subject?: string;
+  content?: string;
+  priority?: "low" | "medium" | "high" | "urgent";
+  scheduled_at?: string;
+  status?: "draft" | "sent" | "delivered" | "read" | "failed";
+}
+
+export interface MeetingIntegration {
+  id: string;
+  provider: "zoom" | "google_meet" | "teams" | "webex" | "other";
+  name: string;
+  is_active: boolean;
+  api_key?: string;
+  webhook_url?: string;
+  settings: Record<string, any>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateMeetingIntegrationInput {
+  provider: "zoom" | "google_meet" | "teams" | "webex" | "other";
+  name: string;
+  api_key?: string;
+  webhook_url?: string;
+  settings?: Record<string, any>;
+}
+
+export interface MeetingAnalytics {
+  total_meetings: number;
+  total_duration: number; // in minutes
+  average_duration: number; // in minutes
+  attendance_rate: number; // percentage
+  meeting_types: Record<string, number>;
+  participants_count: number;
+  action_items_completed: number;
+  action_items_pending: number;
+  period: {
+    start_date: string;
+    end_date: string;
+  };
+}
+
+export interface CommunicationAnalytics {
+  total_messages: number;
+  by_type: Record<string, number>;
+  by_priority: Record<string, number>;
+  response_rate: number; // percentage
+  average_response_time: number; // in minutes
+  period: {
+    start_date: string;
+    end_date: string;
+  };
+}

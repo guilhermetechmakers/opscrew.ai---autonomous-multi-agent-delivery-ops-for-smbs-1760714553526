@@ -10,7 +10,8 @@ import {
   Activity,
   ArrowRight,
   MessageSquare,
-  Target
+  Target,
+  Video
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -43,6 +44,12 @@ export default function Dashboard() {
               <Button variant="outline">
                 <Target className="h-4 w-4 mr-2" />
                 Sprint Planner
+              </Button>
+            </Link>
+            <Link to="/meetings-comms">
+              <Button variant="outline">
+                <Video className="h-4 w-4 mr-2" />
+                Meetings & Comms
               </Button>
             </Link>
             <Button>New Project</Button>

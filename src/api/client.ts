@@ -45,17 +45,15 @@ apiClient.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${access_token}`;
           return apiClient(originalRequest);
         } catch (refreshError) {
-          // Refresh failed, redirect to login
+          // Refresh failed, clear tokens but don't redirect
           localStorage.removeItem("access_token");
           localStorage.removeItem("refresh_token");
-          window.location.href = "/login";
           return Promise.reject(refreshError);
         }
       } else {
-        // No refresh token, redirect to login
+        // No refresh token, clear tokens but don't redirect
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        window.location.href = "/login";
       }
     }
     

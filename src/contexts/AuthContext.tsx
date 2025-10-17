@@ -80,6 +80,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     },
     retry: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
+    // Don't automatically refetch on window focus or mount if no token
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   // Initialize auth state
