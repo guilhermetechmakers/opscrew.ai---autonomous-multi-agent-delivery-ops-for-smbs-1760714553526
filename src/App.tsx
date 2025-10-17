@@ -6,6 +6,7 @@ import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
 import Dashboard from "@/pages/Dashboard";
+import AiIntakePage from "@/pages/AiIntakePage";
 import NotFound from "@/pages/NotFound";
 
 // React Query client with optimal defaults
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/ai-intake" element={<AiIntakePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

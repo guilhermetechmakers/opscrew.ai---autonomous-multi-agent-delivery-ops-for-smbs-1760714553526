@@ -8,8 +8,10 @@ import {
   Users, 
   Zap, 
   Activity,
-  ArrowRight
+  ArrowRight,
+  MessageSquare
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   return (
@@ -24,6 +26,12 @@ export default function Dashboard() {
           <div className="flex items-center space-x-4">
             <ThemeToggle />
             <Button variant="outline">Settings</Button>
+            <Link to="/ai-intake">
+              <Button variant="outline">
+                <MessageSquare className="h-4 w-4 mr-2" />
+                AI Intake
+              </Button>
+            </Link>
             <Button>New Project</Button>
           </div>
         </div>
@@ -98,6 +106,39 @@ export default function Dashboard() {
             </motion.div>
           ))}
         </div>
+
+        {/* AI Intake Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mb-8"
+        >
+          <Card className="bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-primary/20 rounded-xl">
+                    <Bot className="h-8 w-8 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold mb-1">AI Intake & Proposal Generation</h3>
+                    <p className="text-muted-foreground">
+                      Automatically qualify leads and generate proposals with our AI agents
+                    </p>
+                  </div>
+                </div>
+                <Link to="/ai-intake">
+                  <Button size="lg" className="bg-primary hover:bg-primary/90">
+                    <MessageSquare className="h-5 w-5 mr-2" />
+                    Start AI Intake
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
