@@ -13,6 +13,7 @@ import AuthSettingsPage from "@/pages/AuthSettingsPage";
 import Dashboard from "@/pages/Dashboard";
 import AiIntakePage from "@/pages/AiIntakePage";
 import ProjectSpinUpConsole from "@/pages/ProjectSpinUpConsole";
+import SprintTaskPlanner from "@/pages/SprintTaskPlanner";
 import NotFound from "@/pages/NotFound";
 
 // React Query client with optimal defaults
@@ -96,6 +97,14 @@ export default function App() {
                 element={
                   <ProtectedRoute>
                     <ProjectSpinUpConsole />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/sprint-task-planner" 
+                element={
+                  <ProtectedRoute>
+                    <SprintTaskPlanner />
                   </ProtectedRoute>
                 } 
               />

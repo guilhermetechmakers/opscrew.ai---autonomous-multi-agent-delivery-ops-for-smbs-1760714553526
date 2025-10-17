@@ -9,7 +9,8 @@ import {
   Zap, 
   Activity,
   ArrowRight,
-  MessageSquare
+  MessageSquare,
+  Target
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -36,6 +37,12 @@ export default function Dashboard() {
               <Button variant="outline">
                 <Zap className="h-4 w-4 mr-2" />
                 Project Spin-Up
+              </Button>
+            </Link>
+            <Link to="/sprint-task-planner">
+              <Button variant="outline">
+                <Target className="h-4 w-4 mr-2" />
+                Sprint Planner
               </Button>
             </Link>
             <Button>New Project</Button>

@@ -177,6 +177,44 @@ export interface Agent {
   project_id?: string;
 }
 
+// Sprint types
+export interface Sprint {
+  id: string;
+  name: string;
+  description: string;
+  project_id: string;
+  status: "planning" | "active" | "completed" | "cancelled";
+  start_date: string;
+  end_date: string;
+  goal: string;
+  capacity: number; // story points or hours
+  velocity?: number; // actual velocity achieved
+  created_at: string;
+  updated_at: string;
+  completed_at?: string;
+}
+
+export interface CreateSprintInput {
+  name: string;
+  description: string;
+  project_id: string;
+  start_date: string;
+  end_date: string;
+  goal: string;
+  capacity: number;
+}
+
+export interface UpdateSprintInput {
+  id: string;
+  name?: string;
+  description?: string;
+  status?: "planning" | "active" | "completed" | "cancelled";
+  start_date?: string;
+  end_date?: string;
+  goal?: string;
+  capacity?: number;
+}
+
 // Task types
 export interface Task {
   id: string;
@@ -187,6 +225,106 @@ export interface Task {
   assignee_id?: string;
   project_id: string;
   sprint_id?: string;
+  story_points?: number;
+  estimated_hours?: number;
+  actual_hours?: number;
+  labels: string[];
+  acceptance_criteria: string[];
+  dependencies: string[]; // task IDs
+  created_at: string;
+  updated_at: string;
+  completed_at?: string;
+}
+
+export interface CreateTaskInput {
+  title: string;
+  description: string;
+  project_id: string;
+  sprint_id?: string;
+  priority: "low" | "medium" | "high" | "urgent";
+  assignee_id?: string;
+  story_points?: number;
+  estimated_hours?: number;
+  labels?: string[];
+  acceptance_criteria?: string[];
+  dependencies?: string[];
+}
+
+export interface UpdateTaskInput {
+  id: string;
+  title?: string;
+  description?: string;
+  status?: "todo" | "in_progress" | "review" | "done";
+  priority?: "low" | "medium" | "high" | "urgent";
+  assignee_id?: string;
+  story_points?: number;
+  estimated_hours?: number;
+  actual_hours?: number;
+  labels?: string[];
+  acceptance_criteria?: string[];
+  dependencies?: string[];
+}
+
+// Sprint Planning types
+export interface SprintPlanningSession {
+  id: string;
+  sprint_id: string;
+  status: "planning" | "review" | "approved";
+  participants: string[]; // user IDs
+  agenda: string[];
+  decisions: PlanningDecision[];
+  created_at: string;
+  updated_at: string;
+  completed_at?: string;
+}
+
+export interface PlanningDecision {
+  id: string;
+  task_id: string;
+  decision: "include" | "exclude" | "defer";
+  reasoning: string;
+  story_points?: number;
+  assignee_id?: string;
+  created_at: string;
+}
+
+// Sprint Metrics types
+export interface SprintMetrics {
+  sprint_id: string;
+  total_story_points: number;
+  completed_story_points: number;
+  completion_rate: number;
+  velocity: number;
+  burndown_data: BurndownDataPoint[];
+  task_distribution: {
+    todo: number;
+    in_progress: number;
+    review: number;
+    done: number;
+  };
+  team_velocity: number;
+  sprint_health: "healthy" | "at_risk" | "behind";
+  blockers: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BurndownDataPoint {
+  date: string;
+  ideal_remaining: number;
+  actual_remaining: number;
+  completed: number;
+}
+
+// Team Member types
+export interface TeamMember {
+  id: string;
+  user_id: string;
+  project_id: string;
+  role: "scrum_master" | "product_owner" | "developer" | "designer" | "tester";
+  capacity: number; // hours per sprint
+  availability: number; // percentage
+  skills: string[];
   created_at: string;
   updated_at: string;
 }
