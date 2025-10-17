@@ -348,3 +348,130 @@ export interface AuditLog {
   timestamp: string;
   user_id?: string;
 }
+
+// Project Spin-Up Console Types
+export interface Repository {
+  id: string;
+  name: string;
+  description: string;
+  url: string;
+  provider: "github" | "gitlab" | "bitbucket";
+  visibility: "public" | "private";
+  default_branch: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Environment {
+  id: string;
+  name: string;
+  type: "development" | "staging" | "production";
+  url?: string;
+  status: "pending" | "provisioning" | "active" | "error";
+  provider: "vercel" | "netlify" | "aws" | "gcp" | "azure";
+  region: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CICDPipeline {
+  id: string;
+  name: string;
+  repository_id: string;
+  status: "active" | "inactive" | "error";
+  triggers: Array<"push" | "pull_request" | "manual" | "schedule">;
+  stages: PipelineStage[];
+  last_run?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PipelineStage {
+  id: string;
+  name: string;
+  order: number;
+  type: "build" | "test" | "deploy" | "security" | "quality";
+  commands: string[];
+  environment?: string;
+  dependencies: string[];
+  timeout: number; // in minutes
+}
+
+export interface ProjectTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: "web_app" | "mobile_app" | "api" | "microservice" | "data_science";
+  tech_stack: string[];
+  features: string[];
+  repository_template: string;
+  ci_cd_template: string;
+  environment_config: Record<string, any>;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProjectSetup {
+  id: string;
+  project_id: string;
+  repository?: Repository;
+  environments: Environment[];
+  ci_cd_pipeline?: CICDPipeline;
+  template: ProjectTemplate;
+  status: "pending" | "in_progress" | "completed" | "failed";
+  progress: number; // 0-100
+  steps: SetupStep[];
+  created_at: string;
+  updated_at: string;
+  completed_at?: string;
+}
+
+export interface SetupStep {
+  id: string;
+  name: string;
+  description: string;
+  status: "pending" | "in_progress" | "completed" | "failed" | "skipped";
+  order: number;
+  estimated_duration: number; // in minutes
+  actual_duration?: number;
+  logs?: string[];
+  error_message?: string;
+  dependencies: string[];
+  created_at: string;
+  updated_at: string;
+  completed_at?: string;
+}
+
+export interface ClientPortal {
+  id: string;
+  project_id: string;
+  name: string;
+  url: string;
+  branding: {
+    logo_url?: string;
+    primary_color: string;
+    secondary_color: string;
+    font_family: string;
+  };
+  features: Array<"dashboard" | "timeline" | "files" | "communication" | "billing">;
+  status: "pending" | "active" | "inactive";
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateProjectSetupInput {
+  project_id: string;
+  template_id: string;
+  repository_name: string;
+  repository_visibility: "public" | "private";
+  environments: Array<{
+    name: string;
+    type: "development" | "staging" | "production";
+    provider: "vercel" | "netlify" | "aws" | "gcp" | "azure";
+    region: string;
+  }>;
+  ci_cd_enabled: boolean;
+  client_portal_enabled: boolean;
+  client_portal_name?: string;
+}
