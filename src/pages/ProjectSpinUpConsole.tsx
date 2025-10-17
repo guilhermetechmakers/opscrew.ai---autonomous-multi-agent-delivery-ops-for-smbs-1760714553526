@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
@@ -41,31 +40,14 @@ import {
   Cpu
 } from "lucide-react";
 
-interface ProjectConfig {
-  name: string;
-  description: string;
-  techStack: string[];
-  environment: string;
-  repository: {
-    name: string;
-    visibility: 'private' | 'public';
-    template: string;
-  };
-  infrastructure: {
-    provider: string;
-    region: string;
-    tier: string;
-  };
-  clientPortal: {
-    enabled: boolean;
-    branding: {
-      logo: string;
-      primaryColor: string;
-      secondaryColor: string;
-    };
-    features: string[];
-  };
-}
+// Import new components
+import { ProgressSteps } from "@/components/project-spinup/ProgressSteps";
+import { ProvisioningProgress } from "@/components/project-spinup/ProvisioningProgress";
+import { ConfigurationSummary } from "@/components/project-spinup/ConfigurationSummary";
+import { mockProjectSpinUpData } from "@/api/project-spinup";
+import type { ProjectConfig, TechStackOption, TemplateOption, InfrastructureProvider } from "@/types";
+
+// ProjectConfig is now imported from types
 
 export default function ProjectSpinUpConsole() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -97,32 +79,39 @@ export default function ProjectSpinUpConsole() {
     }
   });
 
-  const techStackOptions = [
-    { id: "react", label: "React", icon: Code },
-    { id: "nextjs", label: "Next.js", icon: Globe },
-    { id: "nodejs", label: "Node.js", icon: Server },
-    { id: "typescript", label: "TypeScript", icon: Code },
-    { id: "tailwind", label: "Tailwind CSS", icon: Code },
-    { id: "postgresql", label: "PostgreSQL", icon: Database },
-    { id: "redis", label: "Redis", icon: Database },
-    { id: "docker", label: "Docker", icon: Cloud },
-    { id: "aws", label: "AWS", icon: Cloud },
-    { id: "vercel", label: "Vercel", icon: Cloud }
-  ];
+  // Use mock data from API layer
+  const techStackOptions: TechStackOption[] = mockProjectSpinUpData.techStackOptions.map(option => ({
+    ...option,
+    icon: getTechIcon(option.id)
+  }));
 
-  const templateOptions = [
-    { id: "nextjs", label: "Next.js Full-Stack", description: "React, TypeScript, Tailwind CSS, Prisma" },
-    { id: "react-spa", label: "React SPA", description: "React, TypeScript, Vite, React Router" },
-    { id: "node-api", label: "Node.js API", description: "Express, TypeScript, PostgreSQL, JWT" },
-    { id: "fullstack", label: "Full-Stack App", description: "Next.js, Prisma, NextAuth, Stripe" }
-  ];
+  const templateOptions: TemplateOption[] = mockProjectSpinUpData.templates.map(template => ({
+    id: template.id,
+    label: template.name,
+    description: template.description,
+    category: template.category,
+    techStack: template.tech_stack,
+    features: template.features
+  }));
 
-  const infrastructureProviders = [
-    { id: "vercel", label: "Vercel", description: "Frontend & API hosting" },
-    { id: "aws", label: "AWS", description: "Full cloud infrastructure" },
-    { id: "digitalocean", label: "DigitalOcean", description: "Simple cloud hosting" },
-    { id: "railway", label: "Railway", description: "Developer-friendly platform" }
-  ];
+  const infrastructureProviders: InfrastructureProvider[] = mockProjectSpinUpData.infrastructureProviders;
+
+  // Helper function to get tech icons
+  function getTechIcon(techId: string) {
+    const iconMap: Record<string, any> = {
+      react: Code,
+      nextjs: Globe,
+      nodejs: Server,
+      typescript: Code,
+      tailwind: Code,
+      postgresql: Database,
+      redis: Database,
+      docker: Cloud,
+      aws: Cloud,
+      vercel: Cloud
+    };
+    return iconMap[techId] || Code;
+  }
 
   const handleTechStackToggle = (techId: string) => {
     setProjectConfig(prev => ({
@@ -164,6 +153,77 @@ export default function ProjectSpinUpConsole() {
     { id: 4, title: "Client Portal", description: "Branded client interface" },
     { id: 5, title: "Review & Deploy", description: "Final configuration and launch" }
   ];
+
+  // Navigation handlers
+  // const handlePrevious = () => {
+  //   setCurrentStep(Math.max(1, currentStep - 1));
+  // };
+
+  // const handleNext = () => {
+  //   setCurrentStep(Math.min(5, currentStep + 1));
+  // };
+
+  const handleStepClick = (stepId: number) => {
+    if (stepId <= currentStep) {
+      setCurrentStep(stepId);
+    }
+  };
+
+  // Quick action handlers
+  // const handleNewProject = () => {
+  //   setCurrentStep(1);
+  //   setProjectConfig({
+  //     name: "",
+  //     description: "",
+  //     techStack: [],
+  //     environment: "development",
+  //     repository: {
+  //       name: "",
+  //       visibility: "private",
+  //       template: "nextjs"
+  //     },
+  //     infrastructure: {
+  //       provider: "vercel",
+  //       region: "us-east-1",
+  //       tier: "starter"
+  //     },
+  //     clientPortal: {
+  //       enabled: true,
+  //       branding: {
+  //         logo: "",
+  //         primaryColor: "#3B82F6",
+  //         secondaryColor: "#1E40AF"
+  //       },
+  //       features: ["dashboard", "progress", "communication"]
+  //     }
+  //   });
+  // };
+
+  // const handleCloneRepository = () => {
+  //   setCurrentStep(2);
+  // };
+
+  // const handleDeployInfrastructure = () => {
+  //   setCurrentStep(3);
+  // };
+
+  // Validation
+  // const canProceed = () => {
+  //   switch (currentStep) {
+  //     case 1:
+  //       return projectConfig.name.trim() !== "" && projectConfig.description.trim() !== "";
+  //     case 2:
+  //       return projectConfig.repository.name.trim() !== "";
+  //     case 3:
+  //       return true; // Infrastructure is always valid
+  //     case 4:
+  //       return true; // Client portal is optional
+  //     case 5:
+  //       return true; // Review step
+  //     default:
+  //       return false;
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -207,66 +267,12 @@ export default function ProjectSpinUpConsole() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Progress Steps */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        <ProgressSteps 
+          steps={steps}
+          currentStep={currentStep}
+          onStepClick={handleStepClick}
           className="mb-12"
-        >
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent mb-2">
-                Project Spin-Up Console
-              </h1>
-              <p className="text-lg text-muted-foreground">
-                Automate your project setup with AI-powered provisioning
-              </p>
-            </div>
-            <div className="text-right">
-              <div className="text-sm text-muted-foreground mb-1">Progress</div>
-              <div className="text-2xl font-bold text-primary">
-                {currentStep} / {steps.length}
-              </div>
-            </div>
-          </div>
-          
-          <div className="relative">
-            <div className="absolute top-4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-            <div className="flex items-center justify-between">
-              {steps.map((step, index) => (
-                <motion.div 
-                  key={step.id} 
-                  className="flex flex-col items-center relative z-10"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <motion.div 
-                    className={`
-                      flex items-center justify-center w-12 h-12 rounded-full text-sm font-semibold
-                      transition-all duration-300 hover:scale-110
-                      ${currentStep >= step.id 
-                        ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/25' 
-                        : 'bg-card border-2 border-border text-muted-foreground hover:border-primary/50'
-                      }
-                    `}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {currentStep > step.id ? (
-                      <CheckCircle className="h-5 w-5" />
-                    ) : (
-                      step.id
-                    )}
-                  </motion.div>
-                  <div className="mt-3 text-center">
-                    <div className="text-sm font-semibold text-foreground">{step.title}</div>
-                    <div className="text-xs text-muted-foreground mt-1 max-w-24">{step.description}</div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+        />
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -336,7 +342,7 @@ export default function ProjectSpinUpConsole() {
                           </Label>
                           <Select
                             value={projectConfig.environment}
-                            onValueChange={(value) => setProjectConfig(prev => ({
+                            onValueChange={(value: "development" | "staging" | "production") => setProjectConfig(prev => ({
                               ...prev,
                               environment: value
                             }))}
@@ -802,77 +808,13 @@ export default function ProjectSpinUpConsole() {
 
                     {/* Step 5: Review & Deploy */}
                     <TabsContent value="5" className="space-y-8 mt-8">
-                      <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="space-y-6"
-                      >
-                        <h3 className="text-xl font-bold flex items-center">
-                          <CheckCircle className="h-5 w-5 mr-2 text-primary" />
-                          Configuration Summary
-                        </h3>
-                        <div className="bg-muted/30 rounded-xl p-6 space-y-4">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="flex justify-between items-center py-2 border-b border-border/50">
-                              <span className="text-muted-foreground font-medium">Project Name:</span>
-                              <span className="font-semibold text-foreground">{projectConfig.name || "Not specified"}</span>
-                            </div>
-                            <div className="flex justify-between items-center py-2 border-b border-border/50">
-                              <span className="text-muted-foreground font-medium">Environment:</span>
-                              <Badge variant="outline" className="capitalize">{projectConfig.environment}</Badge>
-                            </div>
-                            <div className="flex justify-between items-center py-2 border-b border-border/50">
-                              <span className="text-muted-foreground font-medium">Repository:</span>
-                              <span className="font-semibold text-foreground">{projectConfig.repository.name || "Not specified"}</span>
-                            </div>
-                            <div className="flex justify-between items-center py-2 border-b border-border/50">
-                              <span className="text-muted-foreground font-medium">Template:</span>
-                              <Badge variant="secondary">{projectConfig.repository.template}</Badge>
-                            </div>
-                            <div className="flex justify-between items-center py-2 border-b border-border/50">
-                              <span className="text-muted-foreground font-medium">Infrastructure:</span>
-                              <Badge variant="outline">{projectConfig.infrastructure.provider}</Badge>
-                            </div>
-                            <div className="flex justify-between items-center py-2 border-b border-border/50">
-                              <span className="text-muted-foreground font-medium">Client Portal:</span>
-                              <Badge variant={projectConfig.clientPortal.enabled ? "default" : "secondary"}>
-                                {projectConfig.clientPortal.enabled ? "Enabled" : "Disabled"}
-                              </Badge>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
+                      <ConfigurationSummary config={projectConfig} />
 
-                      {isProvisioning && (
-                        <motion.div 
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.2 }}
-                          className="space-y-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/20"
-                        >
-                          <div className="flex items-center space-x-3">
-                            <div className="p-2 rounded-lg bg-primary/10">
-                              <Clock className="h-5 w-5 animate-spin text-primary" />
-                            </div>
-                            <div>
-                              <span className="text-lg font-semibold">Provisioning your project...</span>
-                              <p className="text-sm text-muted-foreground">This may take a few minutes</p>
-                            </div>
-                          </div>
-                          <div className="space-y-3">
-                            <Progress value={provisioningProgress} className="w-full h-3" />
-                            <div className="flex justify-between items-center">
-                              <p className="text-sm text-muted-foreground">
-                                {provisioningProgress}% complete
-                              </p>
-                              <span className="text-sm font-mono text-primary">
-                                {Math.round(provisioningProgress)}%
-                              </span>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
+                      <ProvisioningProgress 
+                        isProvisioning={isProvisioning}
+                        progress={provisioningProgress}
+                        className="mb-6"
+                      />
 
                       {provisioningProgress === 100 && (
                         <motion.div 

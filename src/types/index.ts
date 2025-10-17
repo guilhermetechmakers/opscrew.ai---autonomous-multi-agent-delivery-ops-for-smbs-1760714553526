@@ -475,3 +475,92 @@ export interface CreateProjectSetupInput {
   client_portal_enabled: boolean;
   client_portal_name?: string;
 }
+
+// Enhanced Project Spin-Up Console Types
+export interface ProjectConfig {
+  name: string;
+  description: string;
+  techStack: string[];
+  environment: "development" | "staging" | "production";
+  repository: {
+    name: string;
+    visibility: "private" | "public";
+    template: string;
+  };
+  infrastructure: {
+    provider: string;
+    region: string;
+    tier: string;
+  };
+  clientPortal: {
+    enabled: boolean;
+    branding: {
+      logo: string;
+      primaryColor: string;
+      secondaryColor: string;
+    };
+    features: string[];
+  };
+}
+
+export interface TechStackOption {
+  id: string;
+  label: string;
+  icon: any; // Lucide icon component
+  category: "frontend" | "backend" | "database" | "infrastructure" | "tools";
+}
+
+export interface TemplateOption {
+  id: string;
+  label: string;
+  description: string;
+  category: "web_app" | "mobile_app" | "api" | "microservice" | "data_science";
+  techStack: string[];
+  features: string[];
+}
+
+export interface InfrastructureProvider {
+  id: string;
+  label: string;
+  description: string;
+  pricing: {
+    starter: number;
+    professional: number;
+    enterprise: number;
+  };
+  features: string[];
+}
+
+export interface ProvisioningStep {
+  id: string;
+  name: string;
+  description: string;
+  status: "pending" | "in_progress" | "completed" | "failed" | "skipped";
+  progress: number;
+  estimatedDuration: number; // in seconds
+  actualDuration?: number;
+  logs: string[];
+  error?: string;
+  dependencies: string[];
+}
+
+export interface ProvisioningStatus {
+  id: string;
+  projectId: string;
+  status: "pending" | "in_progress" | "completed" | "failed";
+  progress: number;
+  currentStep?: string;
+  steps: ProvisioningStep[];
+  startedAt: string;
+  completedAt?: string;
+  error?: string;
+}
+
+export interface ProjectSpinUpState {
+  currentStep: number;
+  isProvisioning: boolean;
+  provisioningProgress: number;
+  projectConfig: ProjectConfig;
+  provisioningStatus?: ProvisioningStatus;
+  errors: Record<string, string>;
+}
